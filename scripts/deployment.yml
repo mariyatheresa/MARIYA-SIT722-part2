@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sit722book
+  labels:
+    app: bookcatalog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bookcatalog
+  template:
+    metadata:
+      labels:
+        app: bookcatalog
+    spec:
+      containers:
+      - name: book-catalog
+        image: localhost:8000/book-catalog:latest
+
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          value: postgresql://sit722_postgresql_6_2p_user:CpgkHUGAyxPebMeASxNQQVH76glX2Nzx@db:5432/sit722_postgresql_6_2p
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bookcatalog
+spec:
+  selector:
+    app: bookcatalog
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+  type: LoadBalancer
